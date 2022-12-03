@@ -1,0 +1,41 @@
+version: '3.7'
+services:
+  clickhouse-server-1:
+    container_name: clickhouse-server-1
+    image: clickhouse/clickhouse-server:22.11
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+    volumes:
+      # - ./volumes/tmp:/tmp # migration zookeeper to clickhouse-keeper
+      - ./volumes/clickhouse-server-1-data:/var/lib/clickhouse
+      # - ./etc/clickhouse-server/config.d/zookeeper-config.xml:/etc/clickhouse-server/config.d/zookeeper-config.xml
+      - ./etc/clickhouse-server/config.d/clickhouse-keeper-config.xml:/etc/clickhouse-server/config.d/clickhouse-keeper-config.xml
+      - ./etc/clickhouse-server/config.d/clickhouse-server-1-macros.xml:/etc/clickhouse-server/config.d/clickhouse-server-1-macros.xml
+  clickhouse-server-2:
+    container_name: clickhouse-server-2
+    image: clickhouse/clickhouse-server:22.11
+    ports:
+      - "9001:9000"
+      - "8124:8123"
+    volumes:
+      - ./volumes/clickhouse-server-2-data:/var/lib/clickhouse
+      # - ./etc/clickhouse-server/config.d/zookeeper-config.xml:/etc/clickhouse-server/config.d/zookeeper-config.xml
+      - ./etc/clickhouse-server/config.d/clickhouse-keeper-config.xml:/etc/clickhouse-server/config.d/clickhouse-keeper-config.xml
+      - ./etc/clickhouse-server/config.d/clickhouse-server-2-macros.xml:/etc/clickhouse-server/config.d/clickhouse-server-2-macros.xml
+  # zookeeper:
+  #   container_name: zookeeper
+  #   image: zookeeper
+  #   ports:
+  #     - "2181:2181"
+  #   volumes:
+  #     - ./volumes/tmp/zookeeper/data:/data
+  #     - ./volumes/tmp/zookeeper/datalog:/datalog
+  clickhouse-keeper:
+    container_name: clickhouse-keeper
+    image: clickhouse/clickhouse-keeper:22-alpine
+    ports:
+      - "9181:9181"
+    volumes:
+      - ./volumes/var/lib/clickhouse/coordination/snapshots:/var/lib/clickhouse/coordination/snapshots
+      - ./etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml

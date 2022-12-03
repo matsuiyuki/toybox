@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <listen_host>0.0.0.0</listen_host>
+    <remote_servers>
+        <sample_cluster>
+            <shard>
+                <replica>
+                    <host>clickhouse-server-1</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>clickhouse-server-2</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </sample_cluster>
+    </remote_servers>
+    <zookeeper>
+        <node>
+            <host>clickhouse-keeper</host>
+            <port>9181</port>
+        </node>
+    </zookeeper>
+</clickhouse>
